@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 #
 # Copyright 2007 Google Inc.
 #
@@ -20,7 +20,8 @@ import ROT13
 
 form = """
 <form method="post" action="/testform">
-    <input name="q"/>
+    <textarea name="text">
+    </textarea>
     <input type="submit"/>
 </form>"""
 
@@ -35,9 +36,12 @@ class TestHandler(webapp2.RequestHandler):
         self.response.write(q )
         
 #        self.response.headers['Content-type'] = 'text/plain'
-        self.response.out.write(self.request)
+        str = self.request.get("text")
+        str = ROT13.Rot13(str)
+        self.response.out.write(str)
 
 
 app = webapp2.WSGIApplication([('/', MainHandler),
                               ('/testform', TestHandler)], 
                               debug=True)
+
