@@ -16,14 +16,16 @@
 #
 import webapp2
 import string
-import ROT13
 
 form = """
 <form method="post" action="/testform">
-    <textarea name="text">
+    <textarea name="text">$$$$$$
     </textarea>
     <input type="submit"/>
 </form>"""
+
+def writeHttp(answ):
+    return form.replace('$$$$$$',answ)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -34,11 +36,11 @@ class TestHandler(webapp2.RequestHandler):
     def post(self):
         q = self.request.get("q")
         self.response.write(q )
-        
 #        self.response.headers['Content-type'] = 'text/plain'
         str = self.request.get("text")
-        str = ROT13.Rot13(str)
-        self.response.out.write(str)
+        str = str.encode("rot13")
+        self.response.out.write(writeHttp(str))
+
 
 
 app = webapp2.WSGIApplication([('/', MainHandler),
