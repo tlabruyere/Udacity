@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import webapp2
 import re
-from Forms.Welcome import Welcome
 
 class SignInForm():
     uri = "signin"
@@ -15,13 +14,13 @@ class SignInForm():
     badPassMatchStr = "badPassMatch"
     form = "<form method=\"post\" action=\"/" + uri + "\">" \
         + userStr + "<input type=\"text\" name=\""+ userStr +"\" value=\"{username}\">" \
-        + "<text>{badUser}</text></br>" \
-        + passStr +"<input type=\"text\" name=\""+ passStr +"\" value=\"{password}\">" \
-        + "<text>{badPass}</text></br>" \
-        + verStr + "<input type=\"text\" name=\""+verStr+"\" value=\"{verify}\">" \
-        + "<text>{badPassMatch}</text></br>" \
-        + emailStr + "<input type=\"text\" name=\""+emailStr+"\" value=\"{email}\">"  \
-        + "<text>{badEmail}</text></br>" \
+        + "<font color=\"red\">{badUser}</font></br>" \
+        + passStr +"<input type=\"password\" name=\""+ passStr +"\" value=\"{password}\">" \
+        + "<font color=\"red\">{badPass}</font></br>" \
+        + verStr + "<input type=\"password\" name=\""+verStr+"\" value=\"{verify}\">" \
+        + "<font color=\"red\">{badPassMatch}</font></br>" \
+        + emailStr + "<input type=\"email\" name=\""+emailStr+"\" value=\"{email}\">"  \
+        + "<font color=\"red\">{badEmail}</font></br>" \
         + "<input type=\"submit\"/>" \
     + "</form>"
     emptyDic = {
@@ -35,6 +34,7 @@ class SignInForm():
         badPassMatchStr:""
     }
     currDic = {}
+    _success = False
 
     def get(self, d=None):
         if d == None:
@@ -43,16 +43,18 @@ class SignInForm():
             return self.form.format(**d)
 
     def post(self, request=None):
-#        self.setItems(request)
-#        if self.validUsername(self.currDic[self.userStr]) and \
-#            self.validPassword(self.currDic[self.passStr]) and \
-#            self.passwordMatch(
-#                self.currDic[self.passStr],
-#                self.currDic[self.verStr]) and \
-#            self.validEmail(self.currDic[self.emailStr]):
-#         return Welcome(self.currDic[self.userStr]).get()
-         return Welcome("fread").get()
-#        return self.get(self.currDic)
+        self.setItems(request)
+        _success = False
+        success = True
+        success = self.validUsername(self.currDic[self.userStr]) and success
+        success = self.validPassword(self.currDic[self.passStr]) and success
+        success = self.passwordMatch(
+                        self.currDic[self.passStr],
+                        self.currDic[self.verStr]) and success
+        success = self.validEmail(self.currDic[self.emailStr]) and success
+        if success:
+            self._success = True
+        return self.get(self.currDic)
 
     def setItems(self, request):
         self.currDic[self.userStr] = request.get("username")
@@ -66,6 +68,8 @@ class SignInForm():
         if USER_RE.match(username):
             self.currDic[self.badUserStr] = ""
             isValid = True
+        elif username == '':
+            self.currDic[self.badUserStr] = ""
         else:
             self.currDic[self.badUserStr] = "Bad user name"
         return isValid
@@ -76,8 +80,10 @@ class SignInForm():
         if PASS_RE.match(password):
             self.currDic[self.badPassStr] = ""
             isValid = True
+        elif password == '':
+            self.currDic[self.badPassStr] = ""
         else:
-            self.currDic[self.badPassStr] = "Bad pass"
+            self.currDic[self.badPassStr] = "Bad password"
         return isValid
 
     def passwordMatch(self,password,verifyPass):
@@ -86,7 +92,7 @@ class SignInForm():
             self.currDic[self.badPassMatchStr] = ""
             isValid = True
         else:
-            self.currDic[self.badPassMatchStr] = "Bad pass match"
+            self.currDic[self.badPassMatchStr] = "password does not match"
         return isValid
 
     def validEmail(self,email):
@@ -95,9 +101,14 @@ class SignInForm():
         if EMAIL_RE.match(email):
             self.currDic[self.badEmailStr] = ""
             isValid = True
+        elif email == '':
+            self.currDic[self.badEmailStr] = "Please entar a password"
         else:
             self.currDic[self.badEmailStr] = "Bad email"
         return isValid
+
+    def postSuccussful(self):
+        return self._success
 
 if __name__ == "__main__":
 #    print(SignInForm().get())
@@ -106,5 +117,5 @@ if __name__ == "__main__":
         print('true')
     else:
         print('false')
-    SignInForm().post
+    print(SignInForm().post())
 

@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
-class Welcome(username):
-    _username = username
+class Welcome():
+    def __init__(self,username):
+        self._username = username
 
-    def get():
-        return "Welcome" + _username
+    def get(self):
+        return "Welcome " + self._username
+
+if __name__ == "__main__":
+    print(Welcome("fred").get())
