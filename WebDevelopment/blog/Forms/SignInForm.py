@@ -46,12 +46,12 @@ class SignInForm():
         self.setItems(request)
         _success = False
         success = True
-        success = self.validUsername(self.currDic[self.userStr]) and success
-        success = self.validPassword(self.currDic[self.passStr]) and success
-        success = self.passwordMatch(
+        success &= self.validUsername(self.currDic[self.userStr])
+        success &= self.validPassword(self.currDic[self.passStr])
+        success &= self.passwordMatch(
                         self.currDic[self.passStr],
-                        self.currDic[self.verStr]) and success
-        success = self.validEmail(self.currDic[self.emailStr]) and success
+                        self.currDic[self.verStr])
+        success &= self.validEmail(self.currDic[self.emailStr])
         if success:
             self._success = True
         return self.get(self.currDic)

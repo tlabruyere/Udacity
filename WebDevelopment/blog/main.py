@@ -21,6 +21,7 @@ from Forms.Welcome import Welcome
 class MainHandler(webapp2.RequestHandler):
 
     def get(self):
+#        self.response.write('Hello, Udacity!')
         self.response.write(self.signInForm.get())
 
 class SignInFormHandler(webapp2.RequestHandler):
@@ -37,8 +38,9 @@ class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
         user = self.request.get('user')
         self.response.write(Welcome(user).get())
-       
 
+
+#app = webapp2.WSGIApplication([('/', MainHandler)],debug=True)
 app = webapp2.WSGIApplication([('/', SignInFormHandler),
                                ('/Welcome', WelcomeHandler),
                                ('/signin', SignInFormHandler)],
